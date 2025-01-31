@@ -65,8 +65,10 @@ for filename in os.listdir(data_folder):
                     # Преобразуем координаты в числа
                     coords = list(map(float, point.split(",")))
                     coordinates.append(coords)  # Добавляем координаты в общий список
+                # Если 3 точки, копируем последнюю 
                 if len(coordinates) < 4:
                     coordinates.append(coordinates[2])
+                # Вычисляем углы
                 angle12 = calculate_angle_from_points(coordinates[1], coordinates[0], coordinates[1], coordinates[2])
                 angle23 = calculate_angle_from_points(coordinates[2], coordinates[1], coordinates[2], coordinates[3])
                 angle13 = calculate_angle_from_points(coordinates[0], coordinates[1], coordinates[2], coordinates[3])
@@ -75,30 +77,9 @@ for filename in os.listdir(data_folder):
 # Преобразуем в DataFrame
 df = pd.DataFrame(data)
 
-# Выведем первые строки данных
-# print("DF",df["part_name"])
-
-# Проверяем количество координат в каждой строке
-# df["num_coordinates"] = df["coordinates"].apply(len)
-
-# Выводим распределение количества координат
-# print(df["num_coordinates"].value_counts())
-
-# Если есть строки с некорректным количеством координат, удаляем их
-# df = df[df["num_coordinates"].isin([9, 12])]  # Оставляем только строки с 3 или 4 точками
-
-# Убедимся, что данные теперь корректны
-# print(df["num_coordinates"].value_counts())
-
 # Кодируем названия деталей в числовые метки
 label_encoder = LabelEncoder()
 df["label"] = label_encoder.fit_transform(df["part_name"])
-
-# Дополняем координаты до 12 значений (если нужно)
-# def pad_coordinates(coords, target_length=12):
-#     return coords + [0] * (target_length - len(coords))
-
-# df["padded_coordinates"] = df["coordinates"].apply(lambda x: pad_coordinates(x))
 
 # Преобразуем в numpy-массив
 X = np.array(df["angles"].tolist())
@@ -118,14 +99,10 @@ X_train = scaler.fit_transform(X_train)
 X_val = scaler.transform(X_val)
 X_test = scaler.transform(X_test)
 
-# y_train = to_categorical(y_train, num_classes=5)
-# y_val = to_categorical(y_val, num_classes=5)
-# y_test = to_categorical(y_test, num_classes=5)
-
 # Создаем модель
 model = Sequential([
     # Входной слой
-    Dense(64, activation='relu', input_shape=(3,)),  # 12 входных признаков
+    Dense(64, activation='relu', input_shape=(3,)),  # 3 входных признака
     Dropout(0.2),  
     Dense(32, activation='relu', kernel_regularizer=l2(0.001)),
     Dropout(0.2),
