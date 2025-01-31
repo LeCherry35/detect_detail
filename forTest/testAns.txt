@@ -1,0 +1,13 @@
+Back To Back S;
+Back To Back S;
+Kick Right;
+Kick Right;
+Kick Standard;
+Kick Standard;
+Kick Standard;
+Stub 90;
+Stub 90;
+Stub 90;
+Stub 90;
+Offset;
+Offset;
